@@ -72,7 +72,7 @@ export default class UpdateProfil extends Vue implements User {
 
   id: string | null = '';
 
-  created() {
+  created(): void {
     this.id = sessionStorage.getItem('id');
   }
 
@@ -81,12 +81,12 @@ export default class UpdateProfil extends Vue implements User {
       ? this.setMotDePasse() : window.alert('Vos mots de passe ne corresponde pas');
   }
 
-  setMotDePasse() {
+  setMotDePasse(): void {
     this.user.password = this.passwordOne;
     this.updateUser();
   }
 
-  updateUser() {
+  updateUser(): void {
     let user = {};
     axios.post('http://localhost:8181/user/post', this.user).then(
       (response) => {

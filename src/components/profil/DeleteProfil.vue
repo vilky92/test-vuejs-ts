@@ -13,11 +13,11 @@ import axios from '../../../node_modules/axios';
 export default class DeleteProfil extends Vue {
     id: string | null = '';
 
-    created() {
+    created(): void {
       this.id = sessionStorage.getItem('id');
     }
 
-    delete() {
+    delete(): void {
       axios.delete(`http://localhost:8181/user/delete/${this.id}`)
         .then((res) => {
           console.log('sucess', res);
@@ -29,7 +29,7 @@ export default class DeleteProfil extends Vue {
         });
     }
 
-    handlesubmit() {
+    handlesubmit(): void {
       return (this.id && this.id !== null) ? this.delete() : window.alert('une erreur s\' est produite');
     }
 }

@@ -79,12 +79,12 @@ export default class Inscription extends Vue implements User {
       ? this.setMotDePasse() : window.alert('Vos mots de passe ne corresponde pas');
   }
 
-  setMotDePasse() {
+  setMotDePasse(): void {
     this.user.password = this.passwordOne;
     this.createUser();
   }
 
-  createUser() {
+  createUser(): void {
     let user = {};
     axios.post('http://localhost:8181/user/post', this.user).then(
       (response) => {

@@ -28,6 +28,7 @@
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
 import { User } from '../../interface/User';
+import * as barel from '../../serviceUser/static-methodes/index';
 
 import axios from '../../../node_modules/axios';
 
@@ -43,23 +44,25 @@ export default class GetProfil extends Vue implements User {
 
   id: string | null = '';
 
-  created() {
-    this.id = sessionStorage.getItem('id');
+  created(): void {
+    // this.id = sessionStorage.getItem('id');
+    this.id = barel.myId();
   }
 
-  mounted() {
+  mounted(): string | void {
     return (this.id && this.id !== null) ? this.getUser(this.id) : console.log(this.id);
   }
 
-  getUser(id: string | null) {
-    axios.get(`http://localhost:8181/user/get/${id}`).then(
-      (response) => {
-        this.user = response.data;
-        console.log('sucess', response);
-      },
-    ).catch((response) => {
-      console.log('erreur', response);
-    });
+  getUser(id: string | null): void {
+    // axios.get(`http://localhost:8181/user/get/${id}`).then(
+    //   (response) => {
+    //     this.user = response.data;
+    //     console.log('sucess', response);
+    //   },
+    // ).catch((response) => {
+    //   console.log('erreur', response);
+    // });
+    this.user = barel.getUser(id);
   }
 }
 </script>
