@@ -53,11 +53,12 @@
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
 import { User } from '../../interface/User';
+import * as barel from '../../serviceUser/static-methodes/index';
 
 import axios from '../../../node_modules/axios';
 
 @Component
-export default class UpdateProfil extends Vue implements User {
+export default class UpdateProfil extends Vue {
   user = {
     lastname: '',
     firstname: '',
@@ -66,6 +67,8 @@ export default class UpdateProfil extends Vue implements User {
     email: '',
   };
 
+  userResult!: User;
+
   passwordOne = '';
 
   passwordTwo = '';
@@ -73,10 +76,13 @@ export default class UpdateProfil extends Vue implements User {
   id: string | null = '';
 
   created(): void {
-    this.id = sessionStorage.getItem('id');
+    this.id = barel.myId();
   }
 
   confirmMotDePasse(): string | void {
+    // const isCorrect = barel.confirmMotDePasse(this.passwordOne, this.passwordOne);
+    // return isCorrect ? this.user.password = this.passwordOne :
+    // window.alert('Vos mots de passe ne corresponde pas');
     return (this.passwordOne && this.passwordOne === this.passwordTwo)
       ? this.setMotDePasse() : window.alert('Vos mots de passe ne corresponde pas');
   }
@@ -86,18 +92,9 @@ export default class UpdateProfil extends Vue implements User {
     this.updateUser();
   }
 
-  updateUser(): void {
-    let user = {};
-    axios.post('http://localhost:8181/user/post', this.user).then(
-      (response) => {
-        user = response.data;
-        console.log('sucess', response);
-        sessionStorage.setItem('id', response.data.id);
-        // this.$router.push("connexion")
-      },
-    ).catch((response) => {
-      console.log('erreur', response);
-    });
+  async updateUser(): Promise<User> {
+    this.userResult = await barel.updateUser(this.id, this.user);
+    return this.userResult;
   }
 }
 </script>

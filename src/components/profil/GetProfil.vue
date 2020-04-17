@@ -1,7 +1,7 @@
 <template>
     <div class='formulaire'>
         <h1>Mon profil</h1>
-        <form id='contactes' action method='submit'>
+        <form id='contactes'>
           <fieldset>
             <label for="">Votre nom:</label><br>
             <label for="user.lastname">{{user.lastname}}</label>
@@ -26,15 +26,15 @@
 </template>
 
 <script lang='ts'>
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { User } from '../../interface/User';
 import * as barel from '../../serviceUser/static-methodes/index';
 
 import axios from '../../../node_modules/axios';
 
 @Component
-export default class GetProfil extends Vue implements User {
-  user = {
+export default class GetProfil extends Vue {
+  user: any = {
     firstname: '',
     lastname: '',
     username: '',
@@ -45,24 +45,16 @@ export default class GetProfil extends Vue implements User {
   id: string | null = '';
 
   created(): void {
-    // this.id = sessionStorage.getItem('id');
     this.id = barel.myId();
   }
 
-  mounted(): string | void {
+  mounted(): Promise<User> | void {
     return (this.id && this.id !== null) ? this.getUser(this.id) : console.log(this.id);
   }
 
-  getUser(id: string | null): void {
-    // axios.get(`http://localhost:8181/user/get/${id}`).then(
-    //   (response) => {
-    //     this.user = response.data;
-    //     console.log('sucess', response);
-    //   },
-    // ).catch((response) => {
-    //   console.log('erreur', response);
-    // });
-    this.user = barel.getUser(id);
+  async getUser(id: string | null) {
+    this.user = await barel.getUser(id);
+    return this.user;
   }
 }
 </script>

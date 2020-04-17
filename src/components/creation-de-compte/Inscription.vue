@@ -1,13 +1,13 @@
 <template>
   <div class='formulaire'>
     <h1>Inscription</h1>
-    <form id='contactes' action method='submit'>
+    <form id='contactes'>
       <fieldset>
         <input
           placeholder='Nom'
           type='texte'
           required
-          v-model='user.lastname'
+          v-model='lastname'
         />
       </fieldset>
 
@@ -16,12 +16,12 @@
           placeholder='Prénom'
           type='text'
           required
-          v-model='user.firstname'
+          v-model='firstname'
         />
       </fieldset>
 
       <fieldset>
-        <input placeholder='Pseudonyme' type='texte' required v-model='user.username' />
+        <input placeholder='Pseudonyme' type='texte' required v-model='username' />
       </fieldset>
 
       <fieldset>
@@ -35,13 +35,14 @@
       </fieldset>
 
       <fieldset>
-        <input placeholder='Email' type='mail' required v-model='user.email' />
+        <input placeholder='Email' type='mail' required v-model='email' />
       </fieldset>
 
       <fieldset>
         <button
           id='newcontactsubmit'
-          @click='confirmMotDePasse'
+          :disabled="checkPassword"
+          @click='createUser'
         >
           <span>S'inscrire</span>
         </button>
@@ -53,20 +54,21 @@
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
 import { User } from '../../interface/User';
+import * as barel from '../../serviceUser/static-methodes/index';
 
 import axios from '../../../node_modules/axios';
 
 //  import { InscriptionMethods } from '../../barrel_file/InscriptionBarrel';
 
 @Component
-export default class Inscription extends Vue implements User {
-  user = {
-    lastname: '',
-    firstname: '',
-    username: '',
-    password: '',
-    email: '',
-  };
+export default class Inscription extends Vue {
+  lastname = '';
+
+  firstname = '';
+
+  username= '';
+
+  email = '';
 
   passwordOne = '';
 
@@ -74,28 +76,19 @@ export default class Inscription extends Vue implements User {
 
   //    inscriptionMethods = new InscriptionMethods();
 
-  confirmMotDePasse(): string | void {
-    return (this.passwordOne && this.passwordOne === this.passwordTwo)
-      ? this.setMotDePasse() : window.alert('Vos mots de passe ne corresponde pas');
+  get checkPassword() {
+    return ((this.passwordOne && this.passwordOne !== this.passwordTwo));
   }
 
-  setMotDePasse(): void {
-    this.user.password = this.passwordOne;
-    this.createUser();
-  }
-
-  createUser(): void {
-    let user = {};
-    axios.post('http://localhost:8181/user/post', this.user).then(
-      (response) => {
-        user = response.data;
-        console.log('sucess', response);
-        sessionStorage.setItem('id', response.data.id);
-        // this.$router.push("connexion")
-      },
-    ).catch((response) => {
-      console.log('erreur', response);
-    });
+  async createUser() {
+    const user = {
+      firstname: this.firstname,
+      lastname: this.lastname,
+      email: this.email,
+      username: this.username,
+      password: this.passwordOne,
+    };
+    await barel.postUser(user);
   }
 }
 </script>

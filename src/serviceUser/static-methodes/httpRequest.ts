@@ -2,40 +2,57 @@ import axios from 'axios';
 import { User } from '@/interface/User';
 import { API_URL_USER } from '../../utils/constantes';
 
-class UserObject implements User {
-  user = {
-    firstname: '',
-    lastname: '',
-    username: '',
-    password: '',
-    email: '',
+export async function postUser(user: any) {
+  // try {
+  //   const content = await axios.post(`${API_URL_USER}post`, user);
+  //   const json = await content.data;
+  //   console.log('je suis json ', json);
+  //   const userResult = JSON.parse(json) as User;
+  //   sessionStorage.setItem('id', content.data.id);
+  //   return userResult;
+  // } catch (ex) {
+  //   console.log('erreur', ex);
+  //   throw ex;
+  // }
+  const content = await fetch(`${API_URL_USER}post`,
+    {
+      method: 'post',
+      body: user,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  return await content.json() as User;
+}
+
+export async function getUser(id: string | null): Promise<User> {
+  try {
+    const content = await axios.get(`${API_URL_USER}get/${id}`);
+    const json = await content.data;
+    return json;
+  } catch (ex) {
+    console.log('erreur', ex);
+    throw ex;
   }
 }
 
-export function creerUtilisateur(user: User): {} {
-  const utilisateurCreer = new UserObject();
-  axios.post(`${API_URL_USER}post`, user).then(
-    (response) => {
-      utilisateurCreer.user = response.data;
-      console.log('sucess', response);
-      // this.$router.push("connexion")
-    },
-  ).catch((response) => {
-    console.log('erreur', response);
-  });
-  return utilisateurCreer.user;
+export async function updateUser(id: string | null, user: any): Promise<User> {
+  try {
+    const content = await axios.put(`${API_URL_USER}put/${id}`, user);
+    const json = await content.data;
+    return json;
+  } catch (ex) {
+    console.log('erreur', ex);
+    throw ex;
+  }
 }
 
-export function getUser(id: string | null) {
-  const userObject = new UserObject();
-  axios.get(`${API_URL_USER}get/${id}`).then(
-    (response) => {
-      userObject.user = response.data;
-      console.log('sucess', response);
-    },
-  ).catch((response) => {
-    console.log('erreur', response);
-  });
-  console.log('user http ', userObject.user);
-  return userObject.user;
+export async function deleteUser(id: string | null): Promise<User> {
+  try {
+    const content = await axios.delete(`${API_URL_USER}delete/${id}`);
+    const json = await content.data;
+    sessionStorage.clear();
+    return json;
+  } catch (ex) {
+    console.log('erreur', ex);
+    throw ex;
+  }
 }

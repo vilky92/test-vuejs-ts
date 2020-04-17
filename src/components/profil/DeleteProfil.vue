@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import * as barel from '../../serviceUser/static-methodes/index';
 
 import axios from '../../../node_modules/axios';
 
@@ -14,23 +15,16 @@ export default class DeleteProfil extends Vue {
     id: string | null = '';
 
     created(): void {
-      this.id = sessionStorage.getItem('id');
+      this.id = barel.myId();
     }
 
-    delete(): void {
-      axios.delete(`http://localhost:8181/user/delete/${this.id}`)
-        .then((res) => {
-          console.log('sucess', res);
-          window.alert(res.data);
-          this.$router.push('/connexion');
-        })
-        .catch((err) => {
-          console.log('error', err);
-        });
+    deleteUser(): void {
+      window.alert(barel.deleteUser(this.id).toString());
+      this.$router.push('connexion');
     }
 
     handlesubmit(): void {
-      return (this.id && this.id !== null) ? this.delete() : window.alert('une erreur s\' est produite');
+      return (this.id && this.id !== null) ? this.deleteUser() : window.alert('une erreur s\' est produite');
     }
 }
 </script>
